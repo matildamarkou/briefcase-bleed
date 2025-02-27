@@ -139,6 +139,7 @@
         let button = document.querySelector("button");
         let interval;
         let isSaving = false;
+        let timeActive = 0; // Time in seconds the briefcase has been running
 
         function addMoney() {
             if (isSaving) return;
@@ -150,12 +151,14 @@
             scene.appendChild(money);
             setTimeout(() => money.remove(), 2000);
 
-            loss += (totalLoss / (365 * 24 * 60 * 15)) * 100; // EVEN FASTER LOSS GROWTH
+            loss += (totalLoss / (365 * 24 * 60 * 10)) * 100; // MUCH FASTER LOSS RATE
             counter.textContent = `£${Math.floor(loss)} lost`;
+
+            timeActive += 0.1; // Increment time counter
         }
 
         function startBleeding() {
-            interval = setInterval(addMoney, 100); // Money accumulates even faster
+            interval = setInterval(addMoney, 100); // Money adds up even faster
         }
 
         function saveMoney() {
@@ -163,15 +166,19 @@
             isSaving = true;
 
             clearInterval(interval);
-            let savedAmount = Math.floor(loss * 0.85); // Properly calculate savings
-            counter.textContent = `✅ £${savedAmount} saved per year!`;
+            let savedAmount = Math.floor(loss * 0.85); // Amount saved so far
+            let annualizedSavings = Math.floor((savedAmount / timeActive) * (365 * 24 * 60 * 60)); // Full-year projection
+
+            counter.textContent = `✅ £${savedAmount} saved so far!`;
 
             // Slide briefcase into scene
             briefcase.style.transform = "translateX(400px)";
             briefcase.style.opacity = 1;
 
             // Show reinvestment message
-            message.innerHTML = `🎉 Congrats! You just recovered <strong>£${savedAmount} per year</strong> from automating manual handling & VAT processing. <br><br> 🚀 <strong>What are you thinking of automating next?</strong>`;
+            message.innerHTML = `🎉 You've already saved <strong>£${savedAmount}</strong> in just a short time! <br><br>  
+            If you continued for the full year, you'd recover <strong>£${annualizedSavings}</strong>. <br><br>  
+            🚀 <strong>What are you thinking of automating next?</strong>`;
             message.style.opacity = 1;
 
             // Change button appearance
