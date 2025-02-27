@@ -47,7 +47,7 @@
             font-size: 30px;
             color: gold;
             opacity: 0;
-            animation: fall 3s linear forwards;
+            animation: fall 2s linear forwards;
         }
 
         @keyframes fall {
@@ -65,9 +65,9 @@
         }
 
         #counter {
-            font-size: 24px;
+            font-size: 28px;
             color: #FFCC00;
-            font-weight: 600;
+            font-weight: 700;
             margin: 20px 0;
         }
 
@@ -148,14 +148,14 @@
             money.textContent = '💸';
             money.style.left = Math.random() * 90 + '%';
             scene.appendChild(money);
-            setTimeout(() => money.remove(), 3000);
+            setTimeout(() => money.remove(), 2000);
 
-            loss += (totalLoss / (365 * 24 * 60 * 60)) * 2; // Incremental loss per second
+            loss += (totalLoss / (365 * 24 * 60 * 15)) * 100; // EVEN FASTER LOSS GROWTH
             counter.textContent = `£${Math.floor(loss)} lost`;
         }
 
         function startBleeding() {
-            interval = setInterval(addMoney, 500);
+            interval = setInterval(addMoney, 100); // Money accumulates even faster
         }
 
         function saveMoney() {
@@ -163,7 +163,7 @@
             isSaving = true;
 
             clearInterval(interval);
-            let savedAmount = Math.floor(loss * 0.85); // Calculate realistic savings
+            let savedAmount = Math.floor(loss * 0.85); // Properly calculate savings
             counter.textContent = `✅ £${savedAmount} saved per year!`;
 
             // Slide briefcase into scene
@@ -171,7 +171,7 @@
             briefcase.style.opacity = 1;
 
             // Show reinvestment message
-            message.textContent = `Congrats! You just recovered £${savedAmount} per year from automating manual handling & VAT processing. Spend it on value-driving tasks like advisory services, automation, or client growth.`;
+            message.innerHTML = `🎉 Congrats! You just recovered <strong>£${savedAmount} per year</strong> from automating manual handling & VAT processing. <br><br> 🚀 <strong>What are you thinking of automating next?</strong>`;
             message.style.opacity = 1;
 
             // Change button appearance
@@ -189,6 +189,3 @@
     </script>
 </body>
 </html>
-
-
-
