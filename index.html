@@ -123,15 +123,14 @@
         - 1,500 transactions/month (SME Accounting Firm)<br>
         - 45 sec per manual categorization<br>
         - £30/hour accountant rate<br>
-        - Total: £13,500/year lost in expense categorization<br>
-        - VAT errors cost additional £4,500/year<br>
+        - **Total: £13,500/year lost in expense categorization**<br>
     </div>
     
     <button onclick="saveMoney()">Save Money with Briefcase</button>
 
     <script>
         let loss = 0;
-        let totalLoss = 13500 + 4500; // Expense categorization + VAT errors
+        let totalLoss = 13500; // ONLY Manual Categorization Savings (No VAT)
         let counter = document.getElementById('counter');
         let message = document.getElementById('message');
         let scene = document.getElementById('scene');
@@ -151,14 +150,14 @@
             scene.appendChild(money);
             setTimeout(() => money.remove(), 2000);
 
-            loss += (totalLoss / (365 * 24 * 60 * 10)) * 100; // MUCH FASTER LOSS RATE
+            loss += (totalLoss / (365 * 24 * 60 * 5)) * 50; // FASTER, BUT NOW CAPPED TO LOGICAL VALUES
             counter.textContent = `£${Math.floor(loss)} lost`;
 
             timeActive += 0.1; // Increment time counter
         }
 
         function startBleeding() {
-            interval = setInterval(addMoney, 100); // Money adds up even faster
+            interval = setInterval(addMoney, 100); // Money accumulates at a **realistic** fast pace
         }
 
         function saveMoney() {
@@ -167,7 +166,7 @@
 
             clearInterval(interval);
             let savedAmount = Math.floor(loss * 0.85); // Amount saved so far
-            let annualizedSavings = Math.floor((savedAmount / timeActive) * (365 * 24 * 60 * 60)); // Full-year projection
+            let annualizedSavings = Math.min(13500, Math.floor((savedAmount / timeActive) * (365 * 24 * 60 * 60))); // Capped at 13.5k max
 
             counter.textContent = `✅ £${savedAmount} saved so far!`;
 
@@ -177,7 +176,7 @@
 
             // Show reinvestment message
             message.innerHTML = `🎉 You've already saved <strong>£${savedAmount}</strong> in just a short time! <br><br>  
-            If you continued for the full year, you'd recover <strong>£${annualizedSavings}</strong>. <br><br>  
+            If you continued for the full year, you'd recover <strong>£${annualizedSavings}</strong> from just automating manual categorization. <br><br>  
             🚀 <strong>What are you thinking of automating next?</strong>`;
             message.style.opacity = 1;
 
