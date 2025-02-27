@@ -58,8 +58,8 @@
 
         #briefcase {
             position: absolute;
-            bottom: -100px;
-            left: -120px;
+            bottom: 20px;
+            left: -150px;
             font-size: 80px;
             transition: transform 1s ease-in-out, opacity 0.5s ease-in-out;
         }
@@ -69,6 +69,14 @@
             color: #FFCC00;
             font-weight: 600;
             margin: 20px 0;
+        }
+
+        #message {
+            font-size: 18px;
+            color: #B3B3B3;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
         }
 
         #assumptions {
@@ -108,7 +116,8 @@
     </div>
     
     <div id="counter">£0 lost</div>
-    
+    <div id="message"></div>
+
     <div id="assumptions">
         <strong>Assumptions:</strong><br>
         - 1,500 transactions/month (SME Accounting Firm)<br>
@@ -122,45 +131,64 @@
 
     <script>
         let loss = 0;
-        let interval;
         let totalLoss = 13500 + 4500; // Expense categorization + VAT errors
         let counter = document.getElementById('counter');
+        let message = document.getElementById('message');
         let scene = document.getElementById('scene');
         let briefcase = document.getElementById('briefcase');
         let button = document.querySelector("button");
+        let interval;
+        let isSaving = false;
 
         function addMoney() {
+            if (isSaving) return;
+
             const money = document.createElement('div');
             money.className = 'money';
             money.textContent = '💸';
             money.style.left = Math.random() * 90 + '%';
             scene.appendChild(money);
             setTimeout(() => money.remove(), 3000);
-            
+
             loss += (totalLoss / (365 * 24 * 60 * 60)) * 2; // Incremental loss per second
             counter.textContent = `£${Math.floor(loss)} lost`;
         }
 
         function startBleeding() {
-            interval = setInterval(addMoney, 300);
+            interval = setInterval(addMoney, 500);
         }
 
         function saveMoney() {
+            if (isSaving) return; // Prevent multiple clicks
+            isSaving = true;
+
             clearInterval(interval);
-            counter.textContent = `✅ £${Math.floor(totalLoss * 0.85)} saved!`;
-            
+            let savedAmount = Math.floor(loss * 0.85); // Calculate realistic savings
+            counter.textContent = `✅ £${savedAmount} saved per year!`;
+
             // Slide briefcase into scene
-            briefcase.style.transform = "translateX(420px) translateY(-20px)";
+            briefcase.style.transform = "translateX(400px)";
             briefcase.style.opacity = 1;
 
-            // Button changes
+            // Show reinvestment message
+            message.textContent = `Congrats! You just recovered £${savedAmount} per year from automating manual handling & VAT processing. Spend it on value-driving tasks like advisory services, automation, or client growth.`;
+            message.style.opacity = 1;
+
+            // Change button appearance
             button.style.background = "#28A745";
             button.textContent = "Briefcase Activated ✅";
+
+            // Remove money elements
+            document.querySelectorAll('.money').forEach(money => {
+                money.style.animation = "none"; // Stop money animation
+                money.style.opacity = 0;
+            });
         }
 
         startBleeding();
     </script>
 </body>
 </html>
+
 
 
