@@ -5,82 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Briefcase Savings Simulator</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
         body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            background-color: #121212;
+            font-family: 'Inter', sans-serif;
+            background-color: #0B0D10;
             color: white;
+            text-align: center;
             margin: 0;
             padding: 20px;
-            overflow-x: hidden;
         }
+
         h1 {
-            font-size: 28px;
-            color: #ffcc00;
-            text-shadow: 2px 2px 5px rgba(255, 204, 0, 0.8);
+            font-size: 40px;
+            font-weight: 800;
+            color: #FFF;
+            margin-bottom: 10px;
         }
+
+        p {
+            font-size: 18px;
+            font-weight: 400;
+            color: #B3B3B3;
+            margin-bottom: 30px;
+        }
+
         #scene {
             position: relative;
             width: 400px;
             height: 300px;
             margin: 20px auto;
-            background-color: #222;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.4);
+            background: #16191D;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
             overflow: hidden;
-            border: 2px solid #ffcc00;
+            border: 2px solid #2C2F36;
         }
-        #briefcase {
-            position: absolute;
-            bottom: 20px;
-            left: -120px;
-            font-size: 80px;
-            transition: transform 1s ease-in-out;
-        }
+
         .money {
             position: absolute;
             font-size: 30px;
             color: gold;
-            text-shadow: 1px 1px 10px gold;
-            animation: bleed 3s linear infinite;
+            opacity: 0;
+            animation: fall 3s linear forwards;
         }
-        @keyframes bleed {
-            0% { top: -50px; opacity: 1; transform: rotate(0deg) scale(1); }
-            100% { top: 270px; opacity: 0; transform: rotate(360deg) scale(0.5); }
+
+        @keyframes fall {
+            0% { top: -50px; opacity: 0; transform: scale(1); }
+            20% { opacity: 1; }
+            100% { top: 280px; opacity: 0; transform: scale(0.8); }
         }
+
+        #briefcase {
+            position: absolute;
+            bottom: -100px;
+            left: -120px;
+            font-size: 80px;
+            transition: transform 1s ease-in-out, opacity 0.5s ease-in-out;
+        }
+
         #counter {
             font-size: 24px;
+            color: #FFCC00;
+            font-weight: 600;
             margin: 20px 0;
-            color: #ffcc00;
         }
+
         #assumptions {
-            font-size: 14px;
-            color: #ddd;
-            background-color: #222;
-            padding: 10px;
-            border-radius: 5px;
+            font-size: 16px;
+            background-color: #16191D;
+            padding: 15px;
+            border-radius: 10px;
             max-width: 400px;
             margin: 20px auto;
-            box-shadow: 0 2px 5px rgba(255, 204, 0, 0.3);
+            color: #B3B3B3;
+            border: 1px solid #2C2F36;
         }
+
         button {
-            padding: 12px 20px;
+            padding: 12px 24px;
             font-size: 18px;
-            background-color: #ff4d4d;
+            background: linear-gradient(135deg, #007AFF, #0056B3);
             color: white;
+            font-weight: 600;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             transition: 0.3s;
         }
+
         button:hover {
-            background-color: #d43f3f;
+            background: linear-gradient(135deg, #0056B3, #004499);
         }
     </style>
 </head>
 <body>
-    <h1>🚀 The Briefcase Bleed Simulator 🚀</h1>
-    <p><i>How much time and money is your firm losing?</i></p>
+    <h1>💼 The Briefcase Bleed Simulator 💰</h1>
+    <p>How much time and money is your firm losing?</p>
     
     <div id="scene">
         <div id="briefcase">💼</div>
@@ -91,10 +112,10 @@
     <div id="assumptions">
         <strong>Assumptions:</strong><br>
         - 1,500 transactions/month (SME Accounting Firm)<br>
-        - 45 seconds per manual categorization<br>
+        - 45 sec per manual categorization<br>
         - £30/hour accountant rate<br>
-        - Total: £13,500/year lost<br>
-        - VAT corrections add another £4,500/year<br>
+        - Total: £13,500/year lost in expense categorization<br>
+        - VAT errors cost additional £4,500/year<br>
     </div>
     
     <button onclick="saveMoney()">Save Money with Briefcase</button>
@@ -102,10 +123,11 @@
     <script>
         let loss = 0;
         let interval;
-        const counter = document.getElementById('counter');
-        const scene = document.getElementById('scene');
-        const briefcase = document.getElementById('briefcase');
-        let totalLoss = 13500 + 4500; // True loss from expense categorization + VAT errors
+        let totalLoss = 13500 + 4500; // Expense categorization + VAT errors
+        let counter = document.getElementById('counter');
+        let scene = document.getElementById('scene');
+        let briefcase = document.getElementById('briefcase');
+        let button = document.querySelector("button");
 
         function addMoney() {
             const money = document.createElement('div');
@@ -115,28 +137,30 @@
             scene.appendChild(money);
             setTimeout(() => money.remove(), 3000);
             
-            loss += (totalLoss / (365 * 24 * 60 * 60)) * 3; // Simulate loss per second
+            loss += (totalLoss / (365 * 24 * 60 * 60)) * 2; // Incremental loss per second
             counter.textContent = `£${Math.floor(loss)} lost`;
         }
 
         function startBleeding() {
-            interval = setInterval(addMoney, 200);
+            interval = setInterval(addMoney, 300);
         }
 
         function saveMoney() {
             clearInterval(interval);
-            counter.textContent = `💰 £${Math.floor(totalLoss * 0.8)} saved!`;
-            document.querySelector("button").style.backgroundColor = "#28a745";
-            document.querySelector("button").textContent = "Briefcase Activated ✅";
-            briefcase.style.transform = "translateX(450px) translateY(-50px)";
+            counter.textContent = `✅ £${Math.floor(totalLoss * 0.85)} saved!`;
             
-            // Play a cash register sound
-            const sound = new Audio("https://www.fesliyanstudios.com/play-mp3/4389");
-            sound.play();
+            // Slide briefcase into scene
+            briefcase.style.transform = "translateX(420px) translateY(-20px)";
+            briefcase.style.opacity = 1;
+
+            // Button changes
+            button.style.background = "#28A745";
+            button.textContent = "Briefcase Activated ✅";
         }
 
         startBleeding();
     </script>
 </body>
 </html>
+
 
