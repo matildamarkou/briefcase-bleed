@@ -6,89 +6,98 @@
     <title>Briefcase Savings Simulator</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             text-align: center;
-            background-color: #f4f4f9;
+            background-color: #121212;
+            color: white;
             margin: 0;
             padding: 20px;
-            color: #333;
+            overflow-x: hidden;
         }
         h1 {
-            color: #0056b3;
+            font-size: 28px;
+            color: #ffcc00;
+            text-shadow: 2px 2px 5px rgba(255, 204, 0, 0.8);
         }
         #scene {
             position: relative;
             width: 400px;
             height: 300px;
             margin: 20px auto;
-            background-color: #fff;
+            background-color: #222;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.4);
             overflow: hidden;
-            border: 2px solid #0056b3;
+            border: 2px solid #ffcc00;
         }
         #briefcase {
             position: absolute;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 60px;
-            color: #0056b3;
-            cursor: pointer;
+            left: -120px;
+            font-size: 80px;
+            transition: transform 1s ease-in-out;
         }
         .money {
             position: absolute;
             font-size: 30px;
             color: gold;
+            text-shadow: 1px 1px 10px gold;
             animation: bleed 3s linear infinite;
         }
         @keyframes bleed {
-            0% { top: -50px; opacity: 1; }
-            100% { top: 100%; opacity: 0; }
+            0% { top: -50px; opacity: 1; transform: rotate(0deg) scale(1); }
+            100% { top: 270px; opacity: 0; transform: rotate(360deg) scale(0.5); }
         }
         #counter {
             font-size: 24px;
             margin: 20px 0;
+            color: #ffcc00;
         }
         #assumptions {
             font-size: 14px;
-            color: #555;
-            background-color: #e9ecef;
+            color: #ddd;
+            background-color: #222;
             padding: 10px;
             border-radius: 5px;
             max-width: 400px;
             margin: 20px auto;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(255, 204, 0, 0.3);
         }
         button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #28a745;
+            padding: 12px 20px;
+            font-size: 18px;
+            background-color: #ff4d4d;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
+            transition: 0.3s;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #d43f3f;
         }
     </style>
 </head>
 <body>
-    <h1>Briefcase Savings Simulator</h1>
+    <h1>🚀 The Briefcase Bleed Simulator 🚀</h1>
+    <p><i>How much time and money is your firm losing?</i></p>
+    
     <div id="scene">
-        <div id="briefcase" onclick="collectMoney()">💼</div>
+        <div id="briefcase">💼</div>
     </div>
+    
     <div id="counter">£0 lost</div>
+    
     <div id="assumptions">
         <strong>Assumptions:</strong><br>
-        - 1,000 transactions/month<br>
-        - 2 mins/transaction<br>
-        - £20/hour accountant rate<br>
-        - Total: £8,000/year lost
+        - 1,500 transactions/month (SME Accounting Firm)<br>
+        - 45 seconds per manual categorization<br>
+        - £30/hour accountant rate<br>
+        - Total: £13,500/year lost<br>
+        - VAT corrections add another £4,500/year<br>
     </div>
-    <button onclick="collectMoney()">Save Money with Briefcase</button>
+    
+    <button onclick="saveMoney()">Save Money with Briefcase</button>
 
     <script>
         let loss = 0;
@@ -96,28 +105,34 @@
         const counter = document.getElementById('counter');
         const scene = document.getElementById('scene');
         const briefcase = document.getElementById('briefcase');
+        let totalLoss = 13500 + 4500; // True loss from expense categorization + VAT errors
 
         function addMoney() {
             const money = document.createElement('div');
             money.className = 'money';
-            money.textContent = '💰';
+            money.textContent = '💸';
             money.style.left = Math.random() * 90 + '%';
             scene.appendChild(money);
             setTimeout(() => money.remove(), 3000);
-            loss += 0.03; // Incremental loss
-            counter.textContent = `£${loss.toFixed(2)} lost`;
+            
+            loss += (totalLoss / (365 * 24 * 60 * 60)) * 3; // Simulate loss per second
+            counter.textContent = `£${Math.floor(loss)} lost`;
         }
 
         function startBleeding() {
-            interval = setInterval(addMoney, 100);
+            interval = setInterval(addMoney, 200);
         }
 
-        function collectMoney() {
+        function saveMoney() {
             clearInterval(interval);
-            briefcase.style.display = 'none';
-            counter.textContent = `£${loss.toFixed(2)} saved!`;
-            document.querySelector('button').style.backgroundColor = '#0056b3';
-            document.querySelector('button').textContent = 'Savings Secured';
+            counter.textContent = `💰 £${Math.floor(totalLoss * 0.8)} saved!`;
+            document.querySelector("button").style.backgroundColor = "#28a745";
+            document.querySelector("button").textContent = "Briefcase Activated ✅";
+            briefcase.style.transform = "translateX(450px) translateY(-50px)";
+            
+            // Play a cash register sound
+            const sound = new Audio("https://www.fesliyanstudios.com/play-mp3/4389");
+            sound.play();
         }
 
         startBleeding();
