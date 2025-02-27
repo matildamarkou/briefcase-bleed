@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Briefcase Bleed 2.0</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: #121212;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 28px;
+            color: #ff4d4d;
+            text-shadow: 2px 2px 5px rgba(255, 77, 77, 0.8);
+        }
+        #scene {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            margin: 20px auto;
+            background: #222;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4);
+            overflow: hidden;
+            border: 2px solid #ff4d4d;
+        }
+        #briefcase-open {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 60px;
+        }
+        .money {
+            position: absolute;
+            font-size: 30px;
+            animation: bleed 2s linear infinite;
+            color: gold;
+            text-shadow: 1px 1px 10px gold;
+        }
+        @keyframes bleed {
+            0% { top: 50px; opacity: 1; transform: rotate(0deg) scale(1); }
+            100% { top: 270px; opacity: 0; transform: rotate(360deg) scale(0.5); }
+        }
+        #counter {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #ffcc00;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 18px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #d43f3f;
+        }
+        #briefcase-closed {
+            position: absolute;
+            top: 40px;
+            left: -200px;
+            font-size: 60px;
+            transition: left 0.5s ease-in-out;
+        }
+        .saved {
+            animation: collect 1.5s linear forwards;
+        }
+        @keyframes collect {
+            0% { top: 270px; opacity: 0; }
+            100% { top: 100px; opacity: 1; left: 50%; transform: translateX(-50%) scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🚨 The Briefcase Bleed 2.0 🚨</h1>
+    <p><i>How much is your firm bleeding? Let’s see...</i></p>
+    <div id="scene">
+        <div id="briefcase-open">💼</div>
+        <div id="briefcase-closed" style="display: none;">💼</div>
+    </div>
+    <div id="counter">£0 lost</div>
+    <button onclick="toggleSave()">Stop the Bleed 💀</button>
+
+    <script>
+        let loss = 0;
+        let saved = false;
+        const scene = document.getElementById('scene');
+        const counter = document.getElementById('counter');
+        const briefcaseOpen = document.getElementById('briefcase-open');
+        const briefcaseClosed = document.getElementById('briefcase-closed');
+        const button = document.querySelector("button");
+        
+        function addMoney() {
+            if (!saved) {
+                const money = document.createElement('div');
+                money.className = 'money';
+                money.textContent = '🪙';
+                money.style.left = Math.random() * 350 + 'px';
+                scene.appendChild(money);
+                setTimeout(() => money.remove(), 2000);
+                loss += 0.05; 
+                if (loss <= 8000) counter.textContent = `£${Math.floor(loss)} lost`;
+            }
+        }
+
+        function toggleSave() {
+            const sound = new Audio(saved ? "reset.mp3" : "cha-ching.mp3");
+            sound.play();
+            saved = !saved;
+            if (saved) {
+                counter.textContent = '💰 £7,200 saved!';
+                document.querySelectorAll('.money').forEach(money => {
+                    money.classList.add('saved');
+                });
+                briefcaseOpen.style.display = 'none';
+                briefcaseClosed.style.display = 'block';
+                briefcaseClosed.style.left = '50%';
+                briefcaseClosed.style.transform = 'translateX(-50%)';
+                button.style.background = '#28a745';
+                button.textContent = "Briefcase Saved You! 🎉";
+            } else {
+                loss = 0;
+                counter.textContent = '£0 lost';
+                briefcaseClosed.style.left = '-200px';
+                briefcaseOpen.style.display = 'block';
+                briefcaseClosed.style.display = 'none';
+                button.style.background = '#ff4d4d';
+                button.textContent = "Stop the Bleed 💀";
+                document.querySelectorAll('.money').forEach(money => money.remove());
+            }
+        }
+
+        setInterval(addMoney, 200);
+    </script>
+</body>
+</html>
